@@ -1,29 +1,26 @@
-# Vercel Deployment TODO
+# TODO: Update Charts to Use Actual Amounts
 
-## Plan Confirmation: ✅ Approved
+## Plan
+- [ ] Update AnalyticsDashboard.jsx - Use actual loan amounts in pie chart and profitability trend
+- [ ] Update BorrowerDashboard.jsx - Use actual payment amounts in payment behavior chart
+- [ ] Update FinancialAnalysis.jsx - Use actual payment/revenue data instead of mock random data
+- [ ] Update PortfolioView.jsx - Use actual loan data instead of mock data
+- [ ] Update DecisionAnalytics.jsx - Use actual amounts where appropriate
 
-## Tasks Completed:
-- [x] 1. Update vite.config.js - Add proper base path for Vercel
-- [x] 2. Create vercel.json - Configure routing and headers for SPA
-- [x] 3. Update index.html - Add proper meta tags
-- [x] 4. Add API endpoints - Create serverless API routes:
-  - [x] /api/loans.js - Loan CRUD operations
-  - [x] /api/payments.js - Payment processing
-  - [x] /api/applications.js - Loan applications
-  - [x] /api/auth.js - Authentication
-- [x] 5. Update package.json - Add Vercel scripts
-- [x] 6. Build project - Verified working (dist folder created)
+## Changes Required
 
-## Status: ✅ Ready for Deployment
+### 1. AnalyticsDashboard.jsx
+- Pie chart: Use loan amounts instead of counts
+- Profitability trend: Calculate from actual payments
 
-## Deployment Commands:
-```
-bash
-# Install Vercel CLI
-npm install -g vercel
+### 2. BorrowerDashboard.jsx
+- Payment behavior chart: Use actual payment amounts instead of counts
 
-# Login to Vercel
-vercel login
+### 3. FinancialAnalysis.jsx
+- Revenue trend: Calculate from actual payments received
 
-# Deploy to Vercel (Production)
-vercel --prod
+### 4. PortfolioView.jsx
+- Use actual loan performance data from the system
+
+### 5. DecisionAnalytics.jsx
+- Consider using amounts for risk segmentation

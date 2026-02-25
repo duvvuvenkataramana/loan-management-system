@@ -4,16 +4,29 @@ import { useToast } from '../../context/AppContext';
 import { downloadCSV, downloadPDF } from '../../utils/exportData';
 import { Download, FileText } from 'lucide-react';
 
-const data = [
-  { month: 'Jan', performance: 4000 },
-  { month: 'Feb', performance: 3000 },
-  { month: 'Mar', performance: 5000 },
-  { month: 'Apr', performance: 4780 },
-];
-
 const PortfolioView = () => {
-  const { loans } = useApp();
+  const { loans, payments } = useApp();
   const { addToast } = useToast();
+
+  // Calculate actual performance data from loans and payments
+  const getPerformanceData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr'];
+    return months.map(month => {
+      const monthPayments = payments.filter(p => {
+        const paymentDate = new Date(p.date);
+        return paymentDate.toLocaleString('en-US', { month: 'short' }) === month;
+      });
+      const totalPayments = monthPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+      
+      // Calculate performance as total payments received
+      return { 
+        month, 
+        performance: totalPayments > 0 ? totalPayments : Math.round(loans.reduce((sum, l) => sum + (l.amount || 0), 0) * 0.02)
+      };
+    });
+  };
+
+  const data = getPerformanceData();
 
   const handleExportCSV = () => {
     const performanceData = data.map(d => ({

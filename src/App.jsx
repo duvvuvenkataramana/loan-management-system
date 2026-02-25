@@ -20,6 +20,7 @@ import SystemConfig from './pages/Admin/SystemConfig';
 import PermissionMatrix from './pages/Admin/PermissionMatrix';
 import AuditTrail from './pages/Admin/AuditTrail';
 import AnalyticsDashboard from './pages/Analyst/AnalyticsDashboard';
+import PortfolioView from './pages/Analyst/PortfolioView';
 import ReportBuilder from './pages/Analyst/ReportBuilder';
 import Signup from './pages/Signup';
 
@@ -79,11 +80,52 @@ const UnauthorizedPage = () => {
 const LoginPage = () => {
   const { user, login } = useAuth();
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState('analyst');
+  const [username, setUsername] = useState('analyst');
+  const [password, setPassword] = useState('1234');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Role information
+  const roleInfo = {
+    admin: { 
+      label: 'Admin', 
+      color: 'from-purple-600 to-purple-700',
+      icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-2.573 1.066c1.066.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+      description: 'Full system access',
+      defaultCreds: { username: 'admin', password: '1234' }
+    },
+    lender: { 
+      label: 'Lender', 
+      color: 'from-blue-600 to-blue-700',
+      icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+      description: 'Review & approve loans',
+      defaultCreds: { username: 'lender', password: '1234' }
+    },
+    borrower: { 
+      label: 'Borrower', 
+      color: 'from-teal-600 to-teal-700',
+      icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
+      description: 'Apply for loans',
+      defaultCreds: { username: 'borrower', password: '1234' }
+    },
+    analyst: { 
+      label: 'Analyst', 
+      color: 'from-amber-500 to-orange-600',
+      icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+      description: 'Portfolio analytics',
+      defaultCreds: { username: 'analyst', password: '1234' }
+    }
+  };
+
+  // Handle role change - auto-fill credentials
+  const handleRoleChange = (role) => {
+    setSelectedRole(role);
+    setUsername(roleInfo[role].defaultCreds.username);
+    setPassword(roleInfo[role].defaultCreds.password);
+    setError('');
+  };
 
   if (user) {
     return <Navigate to="/" replace />;
@@ -92,6 +134,16 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    if (!username.trim()) {
+      setError('Username is required');
+      return;
+    }
+    if (!password) {
+      setError('Password is required');
+      return;
+    }
+
     setLoading(true);
 
     // Simulate network delay for realism
@@ -121,6 +173,38 @@ const LoginPage = () => {
           <p className="text-slate-600 text-sm">Sign in to access your account</p>
         </div>
 
+        {/* Role Selection Tabs */}
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 mb-4">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">Select Role to Login</p>
+          <div className="grid grid-cols-4 gap-2">
+            {Object.keys(roleInfo).map((role) => {
+              const info = roleInfo[role];
+              const isSelected = selectedRole === role;
+              return (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => handleRoleChange(role)}
+                  disabled={loading}
+                  className={`p-2 rounded-xl transition-all duration-200 flex flex-col items-center gap-1 ${
+                    isSelected 
+                      ? `bg-gradient-to-r ${info.color} text-white shadow-lg` 
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={info.icon} />
+                  </svg>
+                  <span className="text-[10px] font-bold">{info.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-slate-500 text-center mt-3">
+            {roleInfo[selectedRole].description}
+          </p>
+        </div>
+
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -134,7 +218,20 @@ const LoginPage = () => {
               </div>
             )}
 
-            {/* Username Field */}
+            {/* Current Role Display */}
+            <div className={`bg-gradient-to-r ${roleInfo[selectedRole].color} rounded-xl p-4 text-white`}>
+              <div className="flex items-center gap-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={roleInfo[selectedRole].icon} />
+                </svg>
+                <div>
+                  <p className="font-bold">{roleInfo[selectedRole].label} Account</p>
+                  <p className="text-xs opacity-90">{roleInfo[selectedRole].description}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Username Field - Editable */}
             <div>
               <label htmlFor="username" className="block text-sm font-semibold text-slate-700 mb-2">
                 Username
@@ -146,13 +243,12 @@ const LoginPage = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 text-slate-900 placeholder-slate-400"
-                required
                 autoComplete="username"
                 disabled={loading}
               />
             </div>
 
-            {/* Password Field */}
+            {/* Password Field - Editable */}
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
                 Password
@@ -165,7 +261,6 @@ const LoginPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 text-slate-900 placeholder-slate-400 pr-12"
-                  required
                   autoComplete="current-password"
                   disabled={loading}
                 />
@@ -193,7 +288,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold hover:from-teal-500 hover:to-teal-600 transition-all duration-200 shadow-lg shadow-teal-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className={`w-full px-6 py-3 rounded-xl text-white font-bold transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 bg-gradient-to-r ${roleInfo[selectedRole].color}`}
             >
               {loading ? (
                 <>
@@ -208,7 +303,7 @@ const LoginPage = () => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                   </svg>
-                  <span>Sign In</span>
+                  <span>Sign In as {roleInfo[selectedRole].label}</span>
                 </>
               )}
             </button>
@@ -267,6 +362,7 @@ function App() {
 
           {/* Analyst Specific */}
           <Route element={<ProtectedRoute allowedRoles={['ANALYST']} />}>
+            <Route path="/portfolio" element={<DashboardLayout><PortfolioView /></DashboardLayout>} />
             <Route path="/reports" element={<DashboardLayout><ReportBuilder /></DashboardLayout>} />
           </Route>
 

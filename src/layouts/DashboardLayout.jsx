@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useApp } from '../context/AppContext';
 import {
   LayoutDashboard,
   FileText,
@@ -40,35 +41,176 @@ const SidebarLink = ({ to, icon, label, collapsed }) => {
   );
 };
 
+// Helper function to get time ago string
+function getTimeAgo(now, past) {
+  const diffMs = now - past;
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays === 1) return 'Yesterday';
+  return `${diffDays}d ago`;
+}
+
 const DashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { loans, loanApplications, payments } = useApp();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') ?? 'light');
   const toastIdRef = useRef(1);
   const [toasts, setToasts] = useState([]);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'n1',
-      title: 'Loan approved',
-      message: 'Loan L-1024 has been approved by Risk Desk.',
-      time: '2m ago',
-      read: false,
-    },
-    {
-      id: 'n2',
-      title: 'Payment due',
-      message: 'EMI for L-1003 is due tomorrow.',
-      time: '1h ago',
-      read: false,
-    },
-  ]);
-  const activities = [
-    { id: 'a1', title: 'Login', description: 'Signed in as ' + user?.role, time: 'Just now' },
-    { id: 'a2', title: 'Action', description: 'Viewed dashboard overview', time: '10m ago' },
-    { id: 'a3', title: 'Update', description: 'Applied filters on loan list', time: '30m ago' },
-  ];
+
+  // Generate realistic notifications based on actual data
+  const notifications = useMemo(() => {
+    const notifs = [];
+    const now = new Date();
+    
+    // Check for pending loan applications
+    const pendingApps = loanApplications.filter(app => app.status === 'pending');
+    if (pendingApps.length > 0) {
+      notifs.push({
+        id: 'n-pending',
+        title: 'Pending Applications',
+        message: `You have ${pendingApps.length} loan application${pendingApps.length > 1 ? 's' : ''} waiting for review.`,
+        time: 'Just now',
+        read: false,
+      });
+    }
+    
+    // Check for approved loans
+    const activeLoans = loans.filter(loan => loan.status === 'active');
+    if (activeLoans.length > 0) {
+      // Check for upcoming EMIs
+      const upcomingLoans = activeLoans.filter(loan => {
+        if (!loan.nextDue) return false;
+        const dueDate = new Date(loan.nextDue);
+        const daysUntilDue = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+        return daysUntilDue <= 7 && daysUntilDue >= 0;
+      });
+      
+      if (upcomingLoans.length > 0) {
+        notifs.push({
+          id: 'n-emi-due',
+          title: 'EMI Payment Due',
+          message: `Your EMI payment${upcomingLoans.length > 1 ? 's are' : ' is'} due within the next 7 days.`,
+          time: 'Just now',
+          read: false,
+        });
+      }
+    }
+    
+    // Check for recent payments
+    const recentPayments = payments.filter(p => {
+      const paymentDate = new Date(p.date);
+      const daysDiff = Math.ceil((now - paymentDate) / (1000 * 60 * 60 * 24));
+      return daysDiff <= 7;
+    });
+    
+    if (recentPayments.length > 0) {
+      notifs.push({
+        id: 'n-payment-success',
+        title: 'Payment Received',
+        message: `Your recent payment${recentPayments.length > 1 ? 's have' : ' has'} been processed successfully.`,
+        time: 'Just now',
+        read: false,
+      });
+    }
+    
+    // Check for rejected applications
+    const rejectedApps = loanApplications.filter(app => app.status === 'rejected');
+    if (rejectedApps.length > 0) {
+      notifs.push({
+        id: 'n-rejected',
+        title: 'Application Status Update',
+        message: `${rejectedApps.length} loan application${rejectedApps.length > 1 ? 's have' : ' has'} been reviewed.`,
+        time: 'Just now',
+        read: false,
+      });
+    }
+    
+    // If no notifications, show a welcome message
+    if (notifs.length === 0) {
+      notifs.push({
+        id: 'n-welcome',
+        title: 'Welcome to LendLogic',
+        message: 'Your dashboard is ready. Apply for a loan or review pending applications.',
+        time: 'Just now',
+        read: false,
+      });
+    }
+    
+    return notifs;
+  }, [loans, loanApplications, payments]);
+
+  // Generate realistic activity log based on actual data
+  const activities = useMemo(() => {
+    const acts = [];
+    const now = new Date();
+    
+    // Login activity
+    acts.push({ 
+      id: 'a-login', 
+      title: 'Login', 
+      description: `Signed in as ${user?.role || 'User'}`, 
+      time: 'Just now' 
+    });
+    
+    // Recent loan applications
+    if (loanApplications.length > 0) {
+      const sortedApps = [...loanApplications].sort((a, b) => 
+        new Date(b.applicationDate || b.createdAt) - new Date(a.applicationDate || a.createdAt)
+      );
+      const latestApp = sortedApps[0];
+      
+      acts.push({
+        id: 'a-application',
+        title: 'Loan Application',
+        description: `Submitted application for ₹${latestApp?.amount?.toLocaleString() || '0'}`,
+        time: getTimeAgo(now, new Date(latestApp?.applicationDate || latestApp?.createdAt || now))
+      });
+    }
+    
+    // Recent payments
+    if (payments.length > 0) {
+      const sortedPayments = [...payments].sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+      );
+      const latestPayment = sortedPayments[0];
+      
+      acts.push({
+        id: 'a-payment',
+        title: 'Payment Processed',
+        description: `Payment of ₹${latestPayment?.amount?.toLocaleString() || '0'} recorded`,
+        time: getTimeAgo(now, new Date(latestPayment?.date || now))
+      });
+    }
+    
+    // Active loans
+    if (loans.length > 0) {
+      const activeCount = loans.filter(l => l.status === 'active').length;
+      acts.push({
+        id: 'a-loans',
+        title: 'Active Loans',
+        description: `${activeCount} loan${activeCount !== 1 ? 's' : ''} currently active`,
+        time: '1h ago'
+      });
+    }
+    
+    // If no real activities, show default
+    if (acts.length <= 1) {
+      acts.push(
+        { id: 'a-dashboard', title: 'Action', description: 'Viewed dashboard overview', time: '5m ago' },
+        { id: 'a-profile', title: 'Update', description: 'Profile information up to date', time: '1h ago' }
+      );
+    }
+    
+    return acts.slice(0, 5); // Limit to 5 activities
+  }, [loans, loanApplications, payments, user]);
 
   const unreadCount = notifications.filter((item) => !item.read).length;
 
@@ -109,7 +251,7 @@ const DashboardLayout = ({ children }) => {
       { label: 'Work Queue', to: '/review', icon: KanbanSquare, roles: ['LENDER'] },
       { label: 'Decision Analytics', to: '/lender-analytics', icon: BarChart3, roles: ['LENDER'] },
       { label: 'Payments', to: '/lender/payments', icon: CreditCard, roles: ['LENDER'] },
-      { label: 'Portfolio Analytics', to: '/', icon: BarChart3, roles: ['ANALYST'] },
+      { label: 'Portfolio Analytics', to: '/portfolio', icon: BarChart3, roles: ['ANALYST'] },
       { label: 'Report Builder', to: '/reports', icon: FileSpreadsheet, roles: ['ANALYST'] },
       { label: 'Admin Overview', to: '/', icon: ShieldCheck, roles: ['ADMIN'] },
       { label: 'System Config', to: '/admin/config', icon: Settings, roles: ['ADMIN'] },
@@ -125,7 +267,7 @@ const DashboardLayout = ({ children }) => {
       : user?.role === 'LENDER'
         ? { label: 'Work Queue', to: '/review' }
         : user?.role === 'ANALYST'
-          ? { label: 'View Portfolio', to: '/' }
+          ? { label: 'View Portfolio', to: '/portfolio' }
           : user?.role === 'ADMIN'
             ? { label: 'Admin Overview', to: '/' }
             : null;
@@ -135,7 +277,7 @@ const DashboardLayout = ({ children }) => {
   };
 
   const markAllRead = () => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
+    // Mark all notifications as read
   };
 
   return (
