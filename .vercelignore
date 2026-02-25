@@ -1,0 +1,59 @@
+# Vercel ignore file
+# Files/folders to exclude from deployment
+
+# Dependencies
+node_modules/
+
+# Build outputs (will be built fresh by Vercel)
+dist/
+.vite/
+
+# Development files
+.env.local
+.env.development
+.env.test
+.dev.vars
+
+# Git
+.git/
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation (included for reference)
+# Docs are helpful, so we DON'T ignore them
+# *.md files ARE included in deployment
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Lock files for node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# OS
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Optional npm cache
+.npm
+.eslintcache
