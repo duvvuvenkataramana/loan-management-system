@@ -197,9 +197,9 @@ export const generateLoanStatement = (user, loans, payments, fileName = 'LoanSta
                 <tr>
                   <td>${loan.id}</td>
                   <td>${loan.type}</td>
-                  <td class="amount">$${loan.loanAmount?.toLocaleString()}</td>
-                  <td class="amount">$${loan.remaining?.toLocaleString()}</td>
-                  <td class="amount">$${loan.monthlyEMI?.toLocaleString()}</td>
+                  <td class="amount">₹${loan.loanAmount?.toLocaleString()}</td>
+                  <td class="amount">₹${loan.remaining?.toLocaleString()}</td>
+                  <td class="amount">₹${loan.monthlyEMI?.toLocaleString()}</td>
                   <td>${new Date(loan.nextDue).toLocaleDateString()}</td>
                   <td><span class="status-active">${loan.status.toUpperCase()}</span></td>
                 </tr>
@@ -209,11 +209,11 @@ export const generateLoanStatement = (user, loans, payments, fileName = 'LoanSta
           <div class="summary-box">
             <div class="summary-row">
               <span>Total Active Loans:</span>
-              <strong>$${userLoans.reduce((sum, l) => sum + (l.remaining || 0), 0).toLocaleString()}</strong>
+              <strong>₹${userLoans.reduce((sum, l) => sum + (l.remaining || 0), 0).toLocaleString()}</strong>
             </div>
             <div class="summary-row">
               <span>Average Monthly EMI:</span>
-              <strong>$${(userLoans.reduce((sum, l) => sum + (l.monthlyEMI || 0), 0) / userLoans.length || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
+              <strong>₹${(userLoans.reduce((sum, l) => sum + (l.monthlyEMI || 0), 0) / userLoans.length || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
             </div>
           </div>
         ` : '<p style="color: #666; font-style: italic;">No active loans</p>'}
@@ -237,7 +237,7 @@ export const generateLoanStatement = (user, loans, payments, fileName = 'LoanSta
                 <tr>
                   <td>${new Date(payment.date).toLocaleDateString()}</td>
                   <td>${payment.loanId}</td>
-                  <td class="amount">$${payment.amount?.toLocaleString()}</td>
+                  <td class="amount">₹${payment.amount?.toLocaleString()}</td>
                   <td>${payment.method || 'N/A'}</td>
                   <td><span class="status-active">${(payment.status || 'COMPLETED').toUpperCase()}</span></td>
                   <td>${payment.referenceId || 'N/A'}</td>
@@ -256,11 +256,11 @@ export const generateLoanStatement = (user, loans, payments, fileName = 'LoanSta
           </div>
           <div class="summary-row">
             <span>Total Outstanding Amount:</span>
-            <strong>$${userLoans.reduce((sum, l) => sum + (l.remaining || 0), 0).toLocaleString()}</strong>
+            <strong>₹${userLoans.reduce((sum, l) => sum + (l.remaining || 0), 0).toLocaleString()}</strong>
           </div>
           <div class="summary-row">
             <span>Total Payments Made:</span>
-            <strong>$${userPayments.reduce((sum, p) => sum + (p.amount || 0), 0).toLocaleString()}</strong>
+            <strong>₹${userPayments.reduce((sum, p) => sum + (p.amount || 0), 0).toLocaleString()}</strong>
           </div>
           <div class="summary-row">
             <span>Credit Score:</span>
@@ -344,9 +344,9 @@ export const downloadStatementAsHTML = (user, loans, payments, fileName = 'LoanS
           ${userLoans.map(l => `
             <tr>
               <td>${l.type}</td>
-              <td class="amount">$${l.loanAmount?.toLocaleString()}</td>
-              <td class="amount">$${l.remaining?.toLocaleString()}</td>
-              <td class="amount">$${l.monthlyEMI?.toLocaleString()}</td>
+              <td class="amount">₹${l.loanAmount?.toLocaleString()}</td>
+              <td class="amount">₹${l.remaining?.toLocaleString()}</td>
+              <td class="amount">₹${l.monthlyEMI?.toLocaleString()}</td>
               <td>${l.status}</td>
             </tr>
           `).join('')}
@@ -385,7 +385,7 @@ export const downloadPaymentScheduleAsCSV = (user, loans, fileName = 'PaymentSch
   // Add payment schedule data
   userLoans.forEach(loan => {
     csv += `${loan.id},${loan.type},${new Date(loan.nextDue).toLocaleDateString()},`;
-    csv += `$${loan.monthlyEMI},Principal,Interest,$${loan.remaining},${loan.status}\n`;
+    csv += `₹${loan.monthlyEMI},Principal,Interest,₹${loan.remaining},${loan.status}\n`;
   });
 
   // Create and download CSV

@@ -120,7 +120,7 @@ const RepaymentCenter = () => {
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-teal-100 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300">
           <p className="text-xs uppercase tracking-[0.15em] text-slate-500 font-semibold">Total Outstanding</p>
-          <p className="text-3xl font-black text-slate-900 mt-3">${totalOutstanding.toLocaleString()}</p>
+          <p className="text-3xl font-black text-slate-900 mt-3">₹{totalOutstanding.toLocaleString()}</p>
           <p className="text-sm text-slate-600 mt-1">Across {loanSchedules.length} active loans</p>
         </div>
         <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-teal-100 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300">
@@ -129,7 +129,7 @@ const RepaymentCenter = () => {
             {nextPayment ? new Date(nextPayment.nextDue).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'}
           </p>
           <p className="text-sm text-slate-600 mt-1">
-            {nextPayment ? `EMI $${nextPayment.monthlyEMI}` : 'No upcoming payments'}
+            {nextPayment ? `EMI ₹${nextPayment.monthlyEMI}` : 'No upcoming payments'}
           </p>
         </div>
         <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-teal-100 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300">
@@ -168,7 +168,7 @@ const RepaymentCenter = () => {
                     )}
                   </div>
                   <p className="text-xs text-slate-600 mt-2">
-                    {loan.startDate} to {loan.endDate} • Monthly EMI: ${loan.monthlyEMI}
+                    {loan.startDate} to {loan.endDate} • Monthly EMI: ₹{loan.monthlyEMI}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -212,11 +212,11 @@ const RepaymentCenter = () => {
               <div className="flex items-center justify-between mt-2">
                 <div>
                   <p className="text-xs text-slate-600">Paid</p>
-                  <p className="text-sm font-bold text-emerald-700">${paidAmount.toLocaleString()}</p>
+                  <p className="text-sm font-bold text-emerald-700">₹{paidAmount.toLocaleString()}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-slate-600">Remaining</p>
-                  <p className="text-sm font-bold text-slate-900">${loan.remaining.toLocaleString()}</p>
+                  <p className="text-sm font-bold text-slate-900">₹{loan.remaining.toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -254,9 +254,9 @@ const RepaymentCenter = () => {
                           {dateStr}
                           {isDue && <span className="ml-2 text-xs font-semibold text-amber-600">(Due soon)</span>}
                         </td>
-                        <td className="py-3 px-6 text-slate-700">${principal}</td>
-                        <td className="py-3 px-6 text-slate-700">${interest}</td>
-                        <td className="py-3 px-6 font-bold text-slate-900">${loan.monthlyEMI}</td>
+                        <td className="py-3 px-6 text-slate-700">₹{principal}</td>
+                        <td className="py-3 px-6 text-slate-700">₹{interest}</td>
+                        <td className="py-3 px-6 font-bold text-slate-900">₹{loan.monthlyEMI}</td>
                         <td className="py-3 px-6">
                           <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
                             isPaid 
@@ -500,19 +500,19 @@ const RepaymentCenter = () => {
             <div className="p-4 rounded-xl border border-teal-100">
               <p className="text-xs text-slate-600">Current Balance</p>
               <p className="text-2xl font-black text-slate-900 mt-1">
-                ${activeLoan ? activeLoan.remaining.toLocaleString() : '0'}
+                ₹{activeLoan ? activeLoan.remaining.toLocaleString() : '0'}
               </p>
             </div>
             <div className="p-4 rounded-xl border border-teal-100">
               <p className="text-xs text-slate-600">Interest Savings</p>
-              <p className="text-2xl font-black text-emerald-600 mt-1">${interestSavings.toLocaleString()}</p>
+              <p className="text-2xl font-black text-emerald-600 mt-1">₹{interestSavings.toLocaleString()}</p>
             </div>
           </div>
 
           <div>
             <label className="text-sm font-bold text-slate-900 block mb-2">Payoff Amount</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 font-bold">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 font-bold">₹</span>
               <input
                 type="number"
                 value={payoffAmount}

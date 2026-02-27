@@ -31,7 +31,7 @@ const PortfolioView = () => {
   const handleExportCSV = () => {
     const performanceData = data.map(d => ({
       'Month': d.month,
-      'Performance': `$${d.performance.toLocaleString()}`,
+      'Performance': `₹${d.performance.toLocaleString()}`,
     }));
     
     const success = downloadCSV(performanceData, `portfolio-performance-${new Date().toISOString().split('T')[0]}.csv`);
@@ -49,7 +49,7 @@ const PortfolioView = () => {
         type: 'info',
         data: {
           'Total Loans': loans.length,
-          'Latest Performance': `$${data[data.length - 1].performance.toLocaleString()}`,
+          'Latest Performance': `₹${data[data.length - 1].performance.toLocaleString()}`,
           'Trend': 'Growing',
         }
       },

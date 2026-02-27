@@ -3,9 +3,8 @@ import { useApp } from '../../context/AppContext';
 import { Users, Settings, Activity } from 'lucide-react';
 
 const AdminOverview = () => {
-  const { loanApplications, loans, payments } = useApp();
+  const { loanApplications, loans, payments, loanTypes } = useApp();
   
-  const loanTypes = ['personal', 'home', 'auto', 'education', 'business'];
   const activeLoanTypes = loanTypes.length;
   const totalApplications = loanApplications.length;
   const totalLoans = loans.length;

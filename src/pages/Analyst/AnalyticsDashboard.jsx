@@ -80,7 +80,7 @@ const AnalyticsDashboard = () => {
         title: 'Portfolio Overview',
         type: 'info',
         data: {
-          'Total Portfolio Value': `$${totalPortfolio.toLocaleString()}`,
+          'Total Portfolio Value': `₹${totalPortfolio.toLocaleString()}`,
           'Active Loans': activeLoans,
           'Total Loans': loans.length,
           'Default Rate': `${defaultRate}%`,
@@ -139,7 +139,7 @@ const AnalyticsDashboard = () => {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-teal-100 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300">
           <p className="text-xs uppercase tracking-[0.15em] text-slate-500 font-semibold">Total portfolio</p>
-          <p className="text-3xl font-black text-slate-900 mt-3">${(totalPortfolio / 1000000).toFixed(1)}M</p>
+          <p className="text-3xl font-black text-slate-900 mt-3">₹{(totalPortfolio / 1000000).toFixed(1)}M</p>
           <p className="text-sm text-slate-600 mt-1">{loans.length} active loans</p>
         </div>
         <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-teal-100 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300">

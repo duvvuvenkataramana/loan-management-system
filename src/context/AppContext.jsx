@@ -23,6 +23,27 @@ export const AppProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
+  // System Settings - shared across all dashboards (Admin, Lender, Analyst, Borrower)
+  const [loanTypes, setLoanTypes] = useState([
+    { id: 1, name: 'Personal loan', rate: '10.4', tenureMin: 12, tenureMax: 36 },
+    { id: 2, name: 'Auto loan', rate: '8.2', tenureMin: 24, tenureMax: 60 },
+    { id: 3, name: 'Education loan', rate: '6.9', tenureMin: 36, tenureMax: 84 },
+    { id: 4, name: 'Home loan', rate: '8.5', tenureMin: 120, tenureMax: 360 },
+    { id: 5, name: 'Business loan', rate: '11.0', tenureMin: 12, tenureMax: 60 },
+  ]);
+
+  const [interestRules, setInterestRules] = useState([
+    { id: 1, tier: 'Prime', minScore: 720, maxScore: 850, rate: '7.2' },
+    { id: 2, tier: 'Standard', minScore: 660, maxScore: 719, rate: '9.4' },
+    { id: 3, tier: 'Subprime', minScore: 0, maxScore: 659, rate: '12.8' },
+  ]);
+
+  const [penaltySettings, setPenaltySettings] = useState({
+    lateFee: '2.5',
+    gracePeriod: '7',
+    defaultThreshold: '60',
+  });
+
   // Toast system
   const [toasts, setToasts] = useState([]);
   const toastIdRef = useRef(0);
@@ -331,7 +352,15 @@ export const AppProvider = ({ children }) => {
     markNotificationRead,
     
     // Loading state
-    isLoading
+    isLoading,
+    
+    // System Settings - shared across all dashboards (Admin, Lender, Analyst, Borrower)
+    loanTypes,
+    setLoanTypes,
+    interestRules,
+    setInterestRules,
+    penaltySettings,
+    setPenaltySettings
   };
 
   const toastValue = {

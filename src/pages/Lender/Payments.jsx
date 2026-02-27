@@ -69,9 +69,9 @@ const LenderPayments = () => {
     : 0;
 
   const paymentStats = [
-    { label: 'Total Received', value: `$${totalReceived.toLocaleString()}`, change: '+6.1%', trend: 'up' },
-    { label: 'Pending Payments', value: `$${incomingPayments.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}`, count: `${incomingPayments.length} payments`, trend: 'neutral' },
-    { label: 'Failed Payments', value: `$${lenderPayments.filter(p => p.status === 'failed').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}`, count: `${failedPayments} payments`, trend: 'down' },
+    { label: 'Total Received', value: `₹${totalReceived.toLocaleString()}`, change: '+6.1%', trend: 'up' },
+    { label: 'Pending Payments', value: `₹${incomingPayments.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}`, count: `${incomingPayments.length} payments`, trend: 'neutral' },
+    { label: 'Failed Payments', value: `₹${lenderPayments.filter(p => p.status === 'failed').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}`, count: `${failedPayments} payments`, trend: 'down' },
     { label: 'Success Rate', value: `${successRate}%`, change: '+2.1%', trend: 'up' },
   ];
 
@@ -226,7 +226,7 @@ const LenderPayments = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-black text-slate-900">${payment.amount.toLocaleString()}</p>
+                  <p className="text-xl font-black text-slate-900">₹{payment.amount.toLocaleString()}</p>
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full mt-1 inline-block ${
                     payment.status === 'pending'
                       ? 'bg-amber-100 text-amber-700'
@@ -306,7 +306,7 @@ const LenderPayments = () => {
                     <td className="py-4 px-6 font-bold text-slate-900">{payment.id}</td>
                     <td className="py-4 px-6 text-slate-700">Borrower {payment.borrowerId}</td>
                     <td className="py-4 px-6 font-semibold text-slate-900">{payment.loanId}</td>
-                    <td className="py-4 px-6 font-bold text-slate-900">${payment.amount.toLocaleString()}</td>
+                    <td className="py-4 px-6 font-bold text-slate-900">₹{payment.amount.toLocaleString()}</td>
                     <td className="py-4 px-6 text-slate-700">
                       {new Date(payment.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
@@ -363,7 +363,7 @@ const LenderPayments = () => {
                   <p className="text-xs text-slate-600">{item.count} transactions</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900">${item.amount.toLocaleString()}</p>
+                  <p className="text-sm font-bold text-slate-900">₹{item.amount.toLocaleString()}</p>
                 </div>
               </div>
             )) : (
@@ -379,7 +379,7 @@ const LenderPayments = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wider text-emerald-600 font-bold">Total Received</p>
-                  <p className="text-2xl font-black text-emerald-900 mt-1">${monthlyReceived.toLocaleString()}</p>
+                  <p className="text-2xl font-black text-emerald-900 mt-1">₹{monthlyReceived.toLocaleString()}</p>
                 </div>
                 <TrendingUp size={32} className="text-emerald-600" />
               </div>
@@ -391,7 +391,7 @@ const LenderPayments = () => {
               </div>
               <div className="p-3 rounded-xl bg-white border border-teal-100">
                 <p className="text-xs text-slate-600">Avg. payment</p>
-                <p className="text-xl font-black text-slate-900 mt-1">${monthlyAverage.toLocaleString()}</p>
+                <p className="text-xl font-black text-slate-900 mt-1">₹{monthlyAverage.toLocaleString()}</p>
               </div>
             </div>
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-100">

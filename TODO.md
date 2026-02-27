@@ -1,26 +1,27 @@
-# TODO: Update Charts to Use Actual Amounts
+# TODO: Currency Format & Admin Dashboard Updates
 
-## Plan
-- [ ] Update AnalyticsDashboard.jsx - Use actual loan amounts in pie chart and profitability trend
-- [ ] Update BorrowerDashboard.jsx - Use actual payment amounts in payment behavior chart
-- [ ] Update FinancialAnalysis.jsx - Use actual payment/revenue data instead of mock random data
-- [ ] Update PortfolioView.jsx - Use actual loan data instead of mock data
-- [ ] Update DecisionAnalytics.jsx - Use actual amounts where appropriate
+## Task: Convert all currency to Rupees (₹) format and enhance Admin dashboard
 
-## Changes Required
+### 1. Update Currency Format Functions
+- [ ] `src/utils/finance.js` - Change formatCurrency from USD to INR
+- [ ] `src/utils/exportData.js` - Change all $ to ₹ in format functions
+- [ ] `src/utils/statementGenerator.js` - Change all $$ to ₹
 
-### 1. AnalyticsDashboard.jsx
-- Pie chart: Use loan amounts instead of counts
-- Profitability trend: Calculate from actual payments
+### 2. Update Analyst Dashboard Pages
+- [ ] `src/pages/Analyst/AnalyticsDashboard.jsx` - Change $ to ₹
+- [ ] `src/pages/Analyst/FinancialAnalysis.jsx` - Uses formatCurrency (auto-fixed)
+- [ ] `src/pages/Analyst/PortfolioView.jsx` - Check and update if needed
 
-### 2. BorrowerDashboard.jsx
-- Payment behavior chart: Use actual payment amounts instead of counts
+### 3. Update Other Pages with Currency
+- [ ] Check and update any other pages with USD format
 
-### 3. FinancialAnalysis.jsx
-- Revenue trend: Calculate from actual payments received
+### 4. Admin Dashboard Enhancement
+- [ ] Add working buttons to close/delete approved applications
+- [ ] Add application management functionality to AdminOverview
 
-### 4. PortfolioView.jsx
-- Use actual loan performance data from the system
+### 5. Lender Functionality
+- [ ] Add ability for lender to close/delete approved applications
 
-### 5. DecisionAnalytics.jsx
-- Consider using amounts for risk segmentation
+## Progress:
+- Started: Analyzing codebase and understanding current state
+- In Progress: Implementing changes

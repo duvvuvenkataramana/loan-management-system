@@ -49,7 +49,7 @@ The system now implements a complete real-world loan management workflow:
 ### Admin Account
 - **Username:** `admin`
 - **Password:** `1234`
-- **Role:** Admin
+- **Role:** Ad
 
 ### Analyst Account
 - **Username:** `analyst`

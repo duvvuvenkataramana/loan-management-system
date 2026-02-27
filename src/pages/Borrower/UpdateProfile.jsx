@@ -315,7 +315,7 @@ const UpdateProfile = () => {
                     Monthly Income <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 font-semibold">$</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 font-semibold">₹</span>
                     <input
                       type="number"
                       name="monthlyIncome"

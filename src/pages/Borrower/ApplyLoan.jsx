@@ -31,7 +31,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 
 const ApplyLoan = () => {
   const navigate = useNavigate();
-  const { submitLoanApplication } = useApp();
+  const { submitLoanApplication, loanTypes: globalLoanTypes } = useApp();
   const { addToast } = useToast();
   const { user } = useAuth();
   
@@ -122,13 +122,29 @@ const ApplyLoan = () => {
     };
   }, [formData]);
 
-  const loanTypes = [
-    { id: 'personal', name: 'Personal Loan', icon: User, rate: 10.5, maxAmount: 50000, color: 'teal' },
-    { id: 'home', name: 'Home Loan', icon: Home, rate: 8.5, maxAmount: 500000, color: 'blue' },
-    { id: 'auto', name: 'Auto Loan', icon: Car, rate: 9.0, maxAmount: 100000, color: 'purple' },
-    { id: 'education', name: 'Education Loan', icon: GraduationCap, rate: 7.5, maxAmount: 200000, color: 'emerald' },
-    { id: 'business', name: 'Business Loan', icon: ShoppingBag, rate: 11.0, maxAmount: 150000, color: 'amber' },
-  ];
+  // Use global loanTypes from Admin System Config - map to display format
+  const loanTypes = globalLoanTypes && globalLoanTypes.length > 0 
+    ? globalLoanTypes.map(lt => ({
+        id: lt.name.toLowerCase().replace(/\s+/g, '_'),
+        name: lt.name,
+        rate: parseFloat(lt.rate) || 10,
+        maxAmount: lt.tenureMax * 10000 || 50000,
+        color: lt.name.toLowerCase().includes('personal') ? 'teal' : 
+               lt.name.toLowerCase().includes('home') ? 'blue' : 
+               lt.name.toLowerCase().includes('auto') ? 'purple' : 
+               lt.name.toLowerCase().includes('education') ? 'emerald' : 'amber',
+        icon: lt.name.toLowerCase().includes('personal') ? User :
+              lt.name.toLowerCase().includes('home') ? Home :
+              lt.name.toLowerCase().includes('auto') ? Car :
+              lt.name.toLowerCase().includes('education') ? GraduationCap : ShoppingBag
+      }))
+    : [
+        { id: 'personal', name: 'Personal Loan', icon: User, rate: 10.5, maxAmount: 50000, color: 'teal' },
+        { id: 'home', name: 'Home Loan', icon: Home, rate: 8.5, maxAmount: 500000, color: 'blue' },
+        { id: 'auto', name: 'Auto Loan', icon: Car, rate: 9.0, maxAmount: 100000, color: 'purple' },
+        { id: 'education', name: 'Education Loan', icon: GraduationCap, rate: 7.5, maxAmount: 200000, color: 'emerald' },
+        { id: 'business', name: 'Business Loan', icon: ShoppingBag, rate: 11.0, maxAmount: 150000, color: 'amber' },
+      ];
 
   const selectedLoan = loanTypes.find(loan => loan.id === formData.loanType) || loanTypes[0];
   const interestRate = selectedLoan.rate;

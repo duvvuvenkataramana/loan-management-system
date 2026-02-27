@@ -255,9 +255,9 @@ export const formatLoansForExport = (loans) => {
   return loans.map(loan => ({
     'Loan ID': loan.id,
     'Type': loan.type,
-    'Amount': `$${loan.amount.toLocaleString()}`,
-    'Remaining': `$${loan.remaining.toLocaleString()}`,
-    'EMI': `$${loan.monthlyEMI.toLocaleString()}`,
+    'Amount': `₹${loan.amount.toLocaleString()}`,
+    'Remaining': `₹${loan.remaining.toLocaleString()}`,
+    'EMI': `₹${loan.monthlyEMI.toLocaleString()}`,
     'Interest Rate': `${loan.interestRate}%`,
     'Tenure': `${loan.tenure} months`,
     'Status': loan.status,
@@ -274,11 +274,11 @@ export const formatApplicationsForExport = (applications) => {
   return applications.map(app => ({
     'Application ID': app.id,
     'Loan Type': app.loanType,
-    'Amount': `$${app.amount.toLocaleString()}`,
+    'Amount': `₹${app.amount.toLocaleString()}`,
     'Tenure': `${app.tenure} months`,
     'Applicant': app.personalInfo?.fullName || '-',
     'Email': app.personalInfo?.email || '-',
-    'Monthly Income': app.employmentInfo?.monthlyIncome ? `$${app.employmentInfo.monthlyIncome.toLocaleString()}` : '-',
+    'Monthly Income': app.employmentInfo?.monthlyIncome ? `₹${app.employmentInfo.monthlyIncome.toLocaleString()}` : '-',
     'Status': app.status,
     'Submitted': app.submittedDate,
   }));
@@ -291,7 +291,7 @@ export const formatPaymentsForExport = (payments) => {
   return payments.map(payment => ({
     'Payment ID': payment.id,
     'Loan ID': payment.loanId,
-    'Amount': `$${payment.amount.toLocaleString()}`,
+    'Amount': `₹${payment.amount.toLocaleString()}`,
     'Date': payment.date,
     'Method': payment.method,
     'Type': payment.type,
